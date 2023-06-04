@@ -1,4 +1,4 @@
-# Projeto Fiori API campeonato brasileiro Brasileirao
+# Projeto Fiori API campeonato brasileiro
 
 Primeiro projeto Fiori para consumir dados de API do campeonato brasileiro série A
 
