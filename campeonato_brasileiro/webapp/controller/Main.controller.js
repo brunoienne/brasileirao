@@ -10,38 +10,53 @@ sap.ui.define([
 
         return Controller.extend("campeonatobrasileiro.controller.Main", {
             onInit: function () {
-                var live = 'live_9bca756e2d0e4263ce24fb0dd9db71';
-                var test = 'test_bc1624368f176739606514c1e8d285';
+                const live = 'live_9bca756e2d0e4263ce24fb0dd9db71';
+                const test = 'test_bc1624368f176739606514c1e8d285';
 
-                var visao = this.getView();
+                var oCampeonato = new JSONModel();
+                var oRodada     = new JSONModel();
+                var oTabela     = new JSONModel();
 
-                 //Campeonato
+                this.getView().setModel(oCampeonato,"CampeonatoModel");
+                this.getView().setModel(oRodada,"PartidasModel");
+                this.getView().setModel(oTabela,"ClassificacaoModel");
+
+                this.buscarCampeonato();
+                this.buscarClassificacao();
+
+            },
+
+            //Campeonato
+            buscarCampeonato: function(){      
+                var dadosModel =  this.getView().getModel("CampeonatoModel");
                  $.ajax({
                     method : "GET",
                     url: "https://api.api-futebol.com.br/v1/campeonatos/10",
                     headers: {
-                        'Authorization': 'Bearer ' + live
+                        'Authorization': 'Bearer live_9bca756e2d0e4263ce24fb0dd9db71'
                      },
                      success: function(dados){
-                        var oCampeonato = new JSONModel(dados);
-                        visao.setModel(oCampeonato,"CampeonatoModel");
-                     },
+                        dadosModel.setData(dados);
+                        this.buscarPartidas(dados.rodada_atual.rodada);
+                     }.bind(this), //reconhece funções superiores
                      error: function(erro){
                         console.log(erro);
                      }
 
                 });
-                
-                //Partidas
-                $.ajax({
+            },
+
+            //Partidas
+            buscarPartidas: function(rodada){
+                var dadosModel =  this.getView().getModel("PartidasModel");
+                 $.ajax({
                     method : "GET",
-                    url: "https://api.api-futebol.com.br/v1/campeonatos/10/rodadas/9",
+                    url: "https://api.api-futebol.com.br/v1/campeonatos/10/rodadas/" + rodada,
                     headers: {
-                        'Authorization': 'Bearer ' + live
+                        'Authorization': 'Bearer live_9bca756e2d0e4263ce24fb0dd9db71' 
                      },
                      success: function(dados){
-                        var oRodada = new JSONModel(dados);
-                        visao.setModel(oRodada,"PartidasModel");
+                        dadosModel.setData(dados);
                      },
                      error: function(erro){
                         console.log(erro);
@@ -49,29 +64,26 @@ sap.ui.define([
 
                 });
 
-                //Classificação 
-                /*$.ajax({
+            },
+
+            //Classificação
+           buscarClassificacao: function(){
+                var dadosModel =  this.getView().getModel("ClassificacaoModel");
+                $.ajax({
                     method : "GET",
                     url: "https://api.api-futebol.com.br/v1/campeonatos/10/tabela",
                     headers: {
-                        'Authorization': 'Bearer ' + live
+                        'Authorization': 'Bearer live_9bca756e2d0e4263ce24fb0dd9db71'
                      },
                      success: function(dados){
-                        var jsonConv = {
-                            "Classificacao" : dados
-                        }
-                        var jsonFin = JSON.stringify(jsonConv);
-                        console.log(jsonFin);
-                        var oTabela = new JSONModel(jsonFin);
-                        visao.setModel(oTabela,"ClassificacaoModel");
-                        
+                        dadosModel.setData({'Classificacao' : dados});
                     },
                      error: function(erro){
                         console.log(erro);
                      }
 
-                });*/
-
+                });
             }
+
         });
     });
