@@ -10,9 +10,7 @@ sap.ui.define([
 
         return Controller.extend("campeonatobrasileiro.controller.Main", {
             onInit: function () {
-                const live = 'live_9bca756e2d0e4263ce24fb0dd9db71';
-                const test = 'test_bc1624368f176739606514c1e8d285';
-
+                
                 var oCampeonato = new JSONModel();
                 var oRodada     = new JSONModel();
                 var oTabela     = new JSONModel();
